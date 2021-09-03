@@ -1,0 +1,7 @@
+.idea/
+.vscode/
+.cache/
+cmake-build-debug/
+build/
+*.iml
+*.exe
