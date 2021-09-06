@@ -12,70 +12,7 @@
  * @copyright Copyright (c) 2021
  */
 
-#include <algorithm>
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <random>
-#include <set>
-#include <vector>
-
-template <typename Container>
-constexpr void PrintContainer(const Container& container) {
-  using Type = typename std::allocator_traits<Container>::value_type;
-  if constexpr (std::is_same_v<Container, std::vector<Type>>) {
-    std::copy(container.begin(), container.end(),
-              std::ostream_iterator<Type>(std::cout, " "));
-    std::cout << std::endl;
-  } else {
-    for (auto&& [key, value] : container)
-      std::cout << key << " " << value << std::endl;
-  }
-}
-
-template <typename Container>
-constexpr void RemoveLastElements(Container& container) {
-  using Type = typename std::allocator_traits<Container>::value_type;
-
-  std::random_device rnd_remove_n_counts;
-  std::uniform_int_distribution<int32_t> dist_remove_n_counts(1, 15);
-
-  auto n_count_remove{dist_remove_n_counts(rnd_remove_n_counts)};
-  if constexpr (std::is_same_v<Container, std::vector<Type>>) {
-    for (size_t i{}; i < n_count_remove; ++i) container.pop_back();
-  } else {
-    while (n_count_remove) {
-      auto last{container.rbegin()};
-      auto tmp{last->second - n_count_remove};
-      if (tmp < 0) {
-        n_count_remove -= last->second;
-        container.erase(last->first);
-      } else {
-        last->second = tmp;
-        if (last->second == 0) container.erase(last->first);
-        n_count_remove = 0;
-      }
-    }
-  }
-}
-
-void SyncContainers(std::vector<int32_t>& vec,
-                    std::map<int32_t, int64_t>& map) {
-  std::sort(vec.begin(), vec.end());
-  for (size_t i{}; i < vec.size(); ++i) {
-    auto iter{map.find(vec.back())};
-    if (iter == map.end()) {
-      auto it_remove{std::remove(vec.begin(), vec.end(), vec.back())};
-      vec.erase(it_remove, vec.end());
-    }
-  }
-
-  std::map<int32_t, int64_t> new_map;
-  for (auto&& [key_digit, n_digits] : map)
-    if (std::binary_search(vec.begin(), vec.end(), key_digit))
-      new_map[key_digit] = n_digits;
-  map = std::move(new_map);
-}
+#include "header/sync_vector_map.h"
 
 bool SyncVectorMapCheck(std::vector<int32_t>& vec,
                         std::map<int32_t, int64_t>& map) {
@@ -88,45 +25,37 @@ bool SyncVectorMapCheck(std::vector<int32_t>& vec,
   return vec_unique_digits == map_unique_digits;
 }
 
-int main() {
-  system("cls");
-
-  // TODO Clean all unused variables.
-  // TODO Clean console output.
+bool TestSyncVectorMapClass() {
+  bool is_sync{true};
   std::random_device rnd_plane_digits;
   std::uniform_int_distribution<int32_t> dist_plane_digits(1, 9);
 
-  std::cout << "Enter the vector's size. Minimum size is 15: ";
-  size_t size{};
-  std::cin >> size;
-  std::cout << "vector init:\t";
-  std::vector<int32_t> vec(size);
-  for (auto&& i : vec) i = dist_plane_digits(rnd_plane_digits);
-  PrintContainer(vec);
+  std::random_device rnd_size;
+  std::uniform_int_distribution<size_t> dist_rnd_size(15, 10000);
 
-  std::cout << "Enter the map's size. Minimum size is 15: ";
-  std::cin >> size;
-  std::map<int32_t, int64_t> map;  // TODO check int64_t for invalid
-  for (size_t i{}; i < size; ++i) ++map[(dist_plane_digits(rnd_plane_digits))];
-  PrintContainer(map);
+  const size_t test_loops{10000};
+  std::vector<bool> checks(test_loops);
+  for (size_t i{}; i < test_loops; ++i) {
+    std::vector<int32_t> vec(dist_rnd_size(rnd_size));
+    for (auto&& i : vec) i = dist_plane_digits(rnd_plane_digits);
 
-  RemoveLastElements(vec);
-  std::cout << "vector erased:\t";
-  PrintContainer(vec);
+    std::map<int32_t, int64_t> map;
+    for (size_t i{}; i < dist_rnd_size(rnd_size); ++i)
+      ++map[(dist_plane_digits(rnd_plane_digits))];
 
-  RemoveLastElements(map);
-  std::cout << "map erased:\n";
-  PrintContainer(map);
+    SyncVectorMap sync_vector_map(vec, map);
+    checks[i] = SyncVectorMapCheck(vec, map);
+  }
 
-  SyncContainers(vec, map);
-  std::cout << "\nvector sync:\t";
-  PrintContainer(vec);
-  std::cout << "map sync:\n";
-  PrintContainer(map);
+  for (auto&& i : checks) is_sync &= i;
+  return is_sync;
+}
 
-  // TODO unit-tests
+int main() {
+  system("cls");
+
   std::cout << "vector and map are";
-  std::cout << (SyncVectorMapCheck(vec, map) ? "\x1b[32m synchronized"
-                                             : "\x1b[31m not synchronized");
-  std::cout << "\x1b[0m";
+  std::cout << (TestSyncVectorMapClass() ? "\x1b[32m synchronized"
+                                         : "\x1b[31m not synchronized");
+  std::cout << "\x1b[0m" << std::endl;
 }

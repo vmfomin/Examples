@@ -3,4 +3,7 @@ project(Test_task)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(Test_task main.cpp)
+file(GLOB HEADERS "header/*.h")
+file(GLOB SOURCES "src/*.cpp")
+
+add_executable(Test_task main.cpp ${HEADERS} ${SOURCES})
