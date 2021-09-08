@@ -7,24 +7,26 @@
 class Person {
  public:
   Person() = delete;
-  Person(const std::string& surname, const std::string& name)
+  template <typename T, typename = std::enable_if_t<
+                            !std::is_base_of_v<Person, std::decay_t<T>> &&
+                            !std::is_integral_v<std::remove_reference_t<T>>>>
+  explicit Person(T&& surname, T&& name)
+      : surname_{std::forward<T>(surname)}, name_{std::forward<T>(name)} {
+    for (auto&& i : surname_) i = std::toupper(i);
+    for (auto&& i : name_) i = std::toupper(i);
+  }
+
+  explicit Person(const char* surname, const char* name)
       : surname_{std::move(surname)}, name_{std::move(name)} {
     for (auto&& i : surname_) i = std::toupper(i);
     for (auto&& i : name_) i = std::toupper(i);
   }
 
-  Person(const std::string& surname) : surname_{std::move(surname)}, name_{} {
+  template <typename T, typename = std::enable_if_t<
+                            !std::is_base_of_v<Person, std::decay_t<T>> &&
+                            !std::is_integral_v<std::remove_reference_t<T>>>>
+  explicit Person(T&& surname) : surname_{std::forward<T>(surname)}, name_{} {
     for (auto&& i : surname_) i = std::toupper(i);
-  }
-
-  Person(const char* surname) : surname_{std::move(surname)}, name_{} {
-    for (auto&& i : surname_) i = std::toupper(i);
-  }
-
-  Person(const char* name, const char* surname)
-      : surname_{std::move(surname)}, name_{std::move(name)} {
-    for (auto&& i : surname_) i = std::toupper(i);
-    for (auto&& i : name_) i = std::toupper(i);
   }
 
   ~Person() = default;
@@ -61,7 +63,7 @@ class Person {
 };
 
 template <typename... Args>
-std::unique_ptr<Person> MakePerson(Args... args) {
+std::unique_ptr<Person> MakePerson(Args&&... args) {
   return std::make_unique<Person>(Person(std::forward<Args>(args)...));
 }
 
@@ -78,7 +80,8 @@ int main() {
 
     persons.emplace_back(MakePerson(surname, name));
   }
-  persons.emplace_back(MakePerson("Sutter"));
+  persons.emplace_back(MakePerson("Meyers"));
+  persons.emplace_back(MakePerson("Sutter", "herb"));
   std::cout << std::endl;
 
   std::cout << "Before\n";
