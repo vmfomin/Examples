@@ -63,8 +63,8 @@ class Person {
 };
 
 template <typename... Args>
-std::unique_ptr<Person> MakePerson(Args&&... args) {
-  return std::make_unique<Person>(Person(std::forward<Args>(args)...));
+std::unique_ptr<Person> MakePerson(Args&&... arg) {
+  return std::make_unique<Person>(Person(std::forward<Args>(arg)...));
 }
 
 int main() {
