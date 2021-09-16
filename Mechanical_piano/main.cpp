@@ -36,7 +36,7 @@ enum class Piano {
  * @param     noteCombination  musical combination
  */
 void printNotes(const std::string& noteCombination) {
-  for (int i{}; i < noteCombination.length(); ++i) {
+  for (int i = 0; i < noteCombination.length(); ++i) {
     int32_t note = noteCombination[i] - '0';
     std::cout << "\x1b[32m";
     switch (1 << (note - 1)) {
@@ -72,7 +72,7 @@ void printNotes(const std::string& noteCombination) {
  * @return    true             notes is valid
  */
 bool checkNoteCombination(std::string& noteCombination) {
-  for (size_t i{}; i < noteCombination.length(); ++i) {
+  for (size_t i = 0; i < noteCombination.length(); ++i) {
     if (noteCombination[i] < '1' || noteCombination[i] > '7') {
       std::cerr << "Error: incorrect note!\n";
       return false;
@@ -85,7 +85,7 @@ int main() {
   std::cout << "\x1b[2J";
   std::stringstream musicNotation;
   std::string noteCombination;
-  for (size_t i{}; i < 12; ++i) {
+  for (size_t i = 0; i < 12; ++i) {
     std::cout << "Enter the music combination: ";
     std::cin >> noteCombination;
     if (!checkNoteCombination(noteCombination)) continue;
@@ -94,7 +94,7 @@ int main() {
   }
 
   std::cout << "\nYour music composition:\n";
-  for (size_t i{}; i < 12; ++i) {
+  for (size_t i = 0; i < 12; ++i) {
     musicNotation >> noteCombination;
     printNotes(noteCombination);
   }

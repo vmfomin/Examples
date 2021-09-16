@@ -42,9 +42,9 @@ void computeBanknote(std::map<int32_t, int32_t>& atm, int32_t& money,
                      const int32_t denomination) {
   if (0 == denomination) return;
 
-  auto banknoteKey{atm.find(denomination)};
+  auto banknoteKey = atm.find(denomination);
   if (banknoteKey->second != 0) {
-    int32_t nDenominationBanknotes{money / denomination};
+    int32_t nDenominationBanknotes = money / denomination;
     if (nDenominationBanknotes < banknoteKey->second) {
       money -= nDenominationBanknotes * banknoteKey->first;
       banknoteKey->second -= nDenominationBanknotes;
@@ -73,8 +73,8 @@ void atmInitStatus(std::map<int32_t, int32_t>& atm, uint32_t& nBanknotes) {
     return;
   }
 
-  for (auto iter{atm.begin()}; iter != atm.end(); ++iter) {
-    int32_t banknote{};
+  for (auto iter = atm.begin(); iter != atm.end(); ++iter) {
+    int32_t banknote = 0;
     bank >> banknote;
     if (banknote == iter->first) bank >> iter->second;
   }
@@ -95,7 +95,7 @@ void addCash(std::map<int32_t, int32_t>& atm, uint32_t& nBanknotes) {
     std::cin >> banknote;
     if (0 == banknote) break;
 
-    auto banknoteKey{atm.find(banknote)};
+    auto banknoteKey = atm.find(banknote);
     if (banknote == banknoteKey->first) {
       ++banknoteKey->second;
       ++nBanknotes;
@@ -112,7 +112,7 @@ void addCash(std::map<int32_t, int32_t>& atm, uint32_t& nBanknotes) {
 }
 
 bool isWithdrawAtmCheck(std::map<int32_t, bool>& isWithdrawBanknotes) {
-  bool isCash{};
+  bool isCash = false;
   for (auto&& i : isWithdrawBanknotes) isCash += i.second;
   return isCash;
 }
@@ -137,7 +137,7 @@ void outputCash(std::map<int32_t, int32_t>& atm, uint32_t& nBanknotes) {
   }
 
   std::cout << "Enter the withdrawal amount: ";
-  int32_t money;
+  int32_t money = 0;
   while (true) {
     std::cin >> money;
     if (0 == money % 100 && 0 != money)
@@ -148,20 +148,19 @@ void outputCash(std::map<int32_t, int32_t>& atm, uint32_t& nBanknotes) {
              "multiple of 100\n";
   }
 
-  int32_t maxSumAtm{};
+  int32_t maxSumAtm = 0;
   for (auto& i : atm) maxSumAtm += i.first * i.second;
 
   std::map<int32_t, int32_t> stableAtm(atm);
 
-  std::map<int32_t, bool> isWithdrawBanknotes{
-      {100, true},  {200, true},  {500, true},
-      {1000, true}, {2000, true}, {5000, true},
-  };
-  int32_t currentBanknoteToWithdraw{};
+  std::map<int32_t, bool> isWithdrawBanknotes = {{100, true},  {200, true},
+                                                 {500, true},  {1000, true},
+                                                 {2000, true}, {5000, true}};
+  int32_t currentBanknoteToWithdraw = 0;
   while (isWithdrawAtmCheck(isWithdrawBanknotes)) {
     if (money <= maxSumAtm) {
-      int32_t tempMoney{money};
-      for (auto iter{atm.rbegin()}; iter != atm.rend() && tempMoney != 0;
+      int32_t tempMoney = money;
+      for (auto iter = atm.rbegin(); iter != atm.rend() && tempMoney != 0;
            ++iter) {
         if (isWithdrawBanknotes[iter->first])
           withdraw(tempMoney, currentBanknoteToWithdraw, iter->first,
@@ -194,10 +193,9 @@ void outputCash(std::map<int32_t, int32_t>& atm, uint32_t& nBanknotes) {
 
 int main() {
   std::cout << "\x1b[2J";
-  std::map<int32_t, int32_t> atm{
-      {100, 0}, {200, 0}, {500, 0}, {1000, 0}, {2000, 0}, {5000, 0},
-  };
-  uint32_t nBanknotes{};
+  std::map<int32_t, int32_t> atm = {{100, 0},  {200, 0},  {500, 0},
+                                    {1000, 0}, {2000, 0}, {5000, 0}};
+  uint32_t nBanknotes = 0;
   atmInitStatus(atm, nBanknotes);
 
   std::cout << "Do you want to withdraw or deposit cash?\n"

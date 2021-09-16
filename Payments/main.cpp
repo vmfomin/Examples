@@ -93,7 +93,7 @@ void putPayment(const std::string& filename) {
 
     std::stringstream personPaymentStream{inputLine};
     {
-      std::string name{};
+      std::string name;
       personPaymentStream >> name;
       if (std::isdigit(name[0])) {
         std::cerr << "\x1b[31mInvalid name!\x1b[0m" << std::endl;
@@ -103,7 +103,7 @@ void putPayment(const std::string& filename) {
     }
 
     {
-      std::string surname{};
+      std::string surname;
       personPaymentStream >> surname;
       if (std::isdigit(surname[0])) {
         std::cerr << "\x1b[31mInvalid surname!\x1b[0m" << std::endl;
@@ -114,7 +114,7 @@ void putPayment(const std::string& filename) {
 
     {
       try {
-        std::string payment{};
+        std::string payment;
         personPaymentStream >> payment;
         personPaymentStruct.payment = std::stod(payment);
       } catch (const std::exception& e) {
@@ -125,7 +125,7 @@ void putPayment(const std::string& filename) {
 
     {
       try {
-        std::string date{};
+        std::string date;
         personPaymentStream >> date;
         int32_t day{std::stoi(date.substr(0, 2))};
         if (day < 1 || day > 31) throw -1;

@@ -26,7 +26,7 @@ constexpr void InsertSort(T& array) noexcept;
 template <typename T>
 constexpr void quickSort(T begin, T end) noexcept {
   if (end - begin < 10) {
-    size_t size{static_cast<size_t>(end - begin)};
+    size_t size = static_cast<size_t>(end - begin);
     for (int i = 1; i < size; ++i) {
       for (int j = i; j > 0 && begin[j - 1] > begin[j]; --j)
         std::swap(begin[j - 1], begin[j]);
@@ -34,10 +34,10 @@ constexpr void quickSort(T begin, T end) noexcept {
     return;
   }
 
-  T i{begin};
-  T j{end};
-  auto pivot{std::max(*(begin + ((end - begin) >> 1)),
-                      std::max(*(begin), *(end - 1)))};
+  T i = begin;
+  T j = end;
+  auto pivot =
+      std::max(*(begin + ((end - begin) >> 1)), std::max(*(begin), *(end - 1)));
 
   while (i < j) {
     while (*(i) < pivot) ++i;
@@ -60,8 +60,8 @@ constexpr void InsertSort(T& array) noexcept {
 template <typename T>
 constexpr void selectSort(T& array) noexcept {
   for (int i = array.size() - 1; i >= 0; --i) {
-    int max_index{};
-    for (int j{}; j <= i; ++j)
+    int max_index = 0;
+    for (int j = 0; j <= i; ++j)
       if (array[j] > array[max_index]) max_index = j;
     std::swap(array[i], array[max_index]);
   }
@@ -69,8 +69,8 @@ constexpr void selectSort(T& array) noexcept {
 
 template <typename T>
 constexpr void bubbleSort(T& array) noexcept {
-  for (int i{}; i < array.size(); ++i)
-    for (int j{}; j < array.size() - i - 1; ++j)
+  for (int i = 0; i < array.size(); ++i)
+    for (int j = 0; j < array.size() - i - 1; ++j)
       if (array[j] > array[j + 1]) std::swap(array[j], array[j + 1]);
 }
 

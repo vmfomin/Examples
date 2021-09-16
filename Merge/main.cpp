@@ -1,7 +1,7 @@
 /**
  * @file      main.cpp
  * @author    vmf0min (vlifom@yandex.ru)
- * @brief     
+ * @brief
  * @version   0.1
  * @date      01-09-2021
  * @copyright Copyright (c) 2021
@@ -38,9 +38,9 @@ constexpr void Merge(InputIterator1 first_1, InputIterator1 last_1,
 
 int main() {
   system("cls");
-  std::vector<int32_t> v1{4,  3,  2,  6,  3,  2,  7,  13, 10, 11,
-                          12, 15, 13, 20, 21, 25, 30, 33, 23};
-  std::vector<int32_t> v2{12, 15, 13, 20, 2, 3, 5, 2, 4, 6, 8, 7};
+  std::vector<int32_t> v1 = {4,  3,  2,  6,  3,  2,  7,  13, 10, 11,
+                             12, 15, 13, 20, 21, 25, 30, 33, 23};
+  std::vector<int32_t> v2 = {12, 15, 13, 20, 2, 3, 5, 2, 4, 6, 8, 7};
   std::sort(v1.begin(), v1.end());
   std::copy(v1.begin(), v1.end(),
             std::ostream_iterator<int32_t>(std::cout, " "));

@@ -67,22 +67,22 @@ void printStatus(const int16_t status, const int16_t hour);
 
 int main() {
   std::cout << "\x1b[2J";
-  char status{};  // current status of panel
-  for (int16_t timeSimulation{}; timeSimulation < 48; ++timeSimulation) {
+  char status = 0;  // current status of panel
+  for (int16_t timeSimulation = 0; timeSimulation < 48; ++timeSimulation) {
     int16_t currentHour = timeSimulation % 24;
     std::cout << "Current hour:\t" << currentHour << std::endl;
     std::cout << "Enter status:\x1b[32m\t";
-    std::string textStatus{};
+    std::string textStatus;
     std::getline(std::cin, textStatus);
     std::cout << "\x1b[0m";
 
-    std::stringstream statusPanel{};
+    std::stringstream statusPanel;
     statusPanel << textStatus;
 
-    double temperatureOutside{};
-    double temperatureInside{};
-    std::string movingOutside{};
-    std::string lightInside{};
+    double temperatureOutside = 0.;
+    double temperatureInside = 0.;
+    std::string movingOutside;
+    std::string lightInside;
     statusPanel >> temperatureOutside;
     statusPanel >> temperatureInside;
     statusPanel >> movingOutside;
@@ -129,7 +129,7 @@ int main() {
 }
 
 void printStatus(const int16_t status, const int16_t hour) {
-  std::string currentStatus{"\x1b[36mCurrent status:\x1b[0m\n"};
+  std::string currentStatus = "\x1b[36mCurrent status:\x1b[0m\n";
   if (status & POWER)
     currentStatus += "POWER:   \x1b[32mon\x1b[0m\n";
   else
