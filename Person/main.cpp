@@ -52,9 +52,8 @@ class Person {
     return false;
   };
 
-  friend std::ostream& operator<<(std::ostream& out, const Person& person) {
-    out << person.surname_ << " " << person.name_ << std::endl;
-    return out;
+  void dump(std::ostream& os) const {
+    os << surname_ << " " << name_ << std::endl;
   }
 
  private:
@@ -65,6 +64,11 @@ class Person {
 template <typename... Args>
 std::unique_ptr<Person> MakePerson(Args&&... arg) {
   return std::make_unique<Person>(Person(std::forward<Args>(arg)...));
+}
+
+std::ostream& operator<<(std::ostream& os, const Person& person) {
+  person.dump(os);
+  return os;
 }
 
 int main() {
